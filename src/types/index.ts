@@ -53,3 +53,14 @@ export interface MarketPrice {
   modalPrice: number;
   date: string;
 }
+
+export interface Message {
+  id: string;
+  chatId: string;
+  senderId: string;
+  senderName: string;
+  recipientId: string;
+  content: string;
+  timestamp: string;
+  isRead: boolean;
+}

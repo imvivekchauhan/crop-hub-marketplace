@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,23 +60,23 @@ export function AddCropForm({ onClose, onCropAdded, editCrop }: AddCropFormProps
           ? {
               ...crop,
               ...formData,
-              isApproved: false // Reset approval when edited
+              isApproved: true // Auto-approve edited crops
             }
           : crop
       );
       localStorage.setItem('crops', JSON.stringify(updatedCrops));
       toast({
         title: "Success",
-        description: "Crop updated successfully and sent for approval"
+        description: "Crop updated successfully!"
       });
     } else {
-      // Add new crop
+      // Add new crop with auto-approval
       const newCrop: Crop = {
         id: Date.now().toString(),
         farmerId: user?.id || '',
         farmerName: user?.name || '',
         ...formData,
-        isApproved: false,
+        isApproved: true, // Auto-approve new crops
         createdAt: new Date().toISOString()
       };
       
@@ -85,7 +84,7 @@ export function AddCropForm({ onClose, onCropAdded, editCrop }: AddCropFormProps
       localStorage.setItem('crops', JSON.stringify(allCrops));
       toast({
         title: "Success",
-        description: "Crop added successfully and sent for approval"
+        description: "Crop added successfully and is now visible to buyers!"
       });
     }
     

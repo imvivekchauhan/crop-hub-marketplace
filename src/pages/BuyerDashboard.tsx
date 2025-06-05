@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -6,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Crop, Order } from '@/types';
-import { Search, ShoppingCart, MapPin, Phone, Heart, Filter, Star } from 'lucide-react';
+import { Search, ShoppingCart, MapPin, Phone, Heart, Filter, MessageCircle } from 'lucide-react';
 import { PlaceOrderForm } from '@/components/PlaceOrderForm';
+import { ChatWindow } from '@/components/ChatWindow';
 
 export default function BuyerDashboard() {
   const { user } = useAuth();
@@ -17,6 +17,7 @@ export default function BuyerDashboard() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState('all');
   const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null);
+  const [chatWith, setChatWith] = useState<{farmerId: string, farmerName: string, cropName?: string} | null>(null);
   const [myOrders, setMyOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState({
     totalOrders: 0,
@@ -90,6 +91,14 @@ export default function BuyerDashboard() {
     { value: '1000-2000', label: '₹1000 - ₹2000' },
     { value: '2000', label: '₹2000+' }
   ];
+
+  const handleChatWithFarmer = (crop: Crop) => {
+    setChatWith({
+      farmerId: crop.farmerId,
+      farmerName: crop.farmerName,
+      cropName: crop.name
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -273,8 +282,12 @@ export default function BuyerDashboard() {
                         <ShoppingCart className="h-4 w-4 mr-2" />
                         Order Now
                       </Button>
-                      <Button variant="outline" size="sm">
-                        <Phone className="h-4 w-4" />
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleChatWithFarmer(crop)}
+                      >
+                        <MessageCircle className="h-4 w-4" />
                       </Button>
                       <Button variant="outline" size="sm">
                         <Heart className="h-4 w-4" />
@@ -329,6 +342,16 @@ export default function BuyerDashboard() {
           crop={selectedCrop}
           onClose={() => setSelectedCrop(null)}
           onOrderPlaced={loadData}
+        />
+      )}
+
+      {/* Chat Modal */}
+      {chatWith && (
+        <ChatWindow
+          farmerId={chatWith.farmerId}
+          farmerName={chatWith.farmerName}
+          cropName={chatWith.cropName}
+          onClose={() => setChatWith(null)}
         />
       )}
     </div>
